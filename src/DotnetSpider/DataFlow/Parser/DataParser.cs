@@ -99,11 +99,7 @@ namespace DotnetSpider.DataFlow.Parser
 
 		private ISelectable CreateHtmlSelectable(DataFlowContext context, string text)
 		{
-			var uri = context.Request.RequestUri;
-			var domain = uri.Port == 80 || uri.Port == 443
-				? $"{uri.Scheme}://{uri.Host}"
-				: $"{uri.Scheme}://{uri.Host}:{uri.Port}";
-			return new HtmlSelectable(text, domain, context.Options.RemoveOutboundLinks);
+			return new HtmlSelectable(text, context.Request.RequestUri, context.Options.RemoveOutboundLinks);
 		}
 
 		/// <summary>
@@ -182,7 +178,7 @@ namespace DotnetSpider.DataFlow.Parser
 		public bool IsValidRequest(Request request)
 		{
 			return _requiredValidator.Count <= 0 ||
-			       _requiredValidator.Any(validator => validator(request));
+				   _requiredValidator.Any(validator => validator(request));
 		}
 	}
 }

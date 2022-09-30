@@ -15,17 +15,17 @@ namespace DotnetSpider.Selector
 			_node = node;
 		}
 
-		public HtmlSelectable(string html, string relativeUri = null, bool removeOutboundLinks = true)
+		public HtmlSelectable(string html, Uri relativeUri = null, bool removeOutboundLinks = true)
 		{
-			var document = new HtmlDocument {OptionAutoCloseOnEnd = true};
+			var document = new HtmlDocument { OptionAutoCloseOnEnd = true };
 			document.LoadHtml(html);
 
-			if (!string.IsNullOrWhiteSpace(relativeUri))
+			if (relativeUri != null && !string.IsNullOrWhiteSpace(relativeUri.ToString()))
 			{
 				HtmlUtilities.FixAllRelativeHref(document, relativeUri);
 				if (removeOutboundLinks)
 				{
-					var host = new Uri(relativeUri).Host;
+					var host = relativeUri.Host;
 					var parts = host.Split('.');
 					var domainPattern = string.Join("\\.", parts);
 					HtmlUtilities.RemoveOutboundLinks(document, domainPattern);
